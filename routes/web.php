@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PagesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::controller(PagesController::class)->group(function(){
+    Route::get('/', 'index');
+    Route::get('/login', 'index')->name('login');
+    Route::get('/register', 'index');
+    Route::get('/mail', 'test');
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    // Route::prefix('dashboard')->group(function(){
+    //     Route::get('/', [DashboardController::class, 'index']);
+    // });
+    Route::group(['prefix' => '/{user}'], function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('user.dashboard');
+        // Route::get('/profile', [DashboardController::class, 'profile'])->name('user.profile');
+        // Route::get('/help', [DashboardController::class, 'profile'])->name('user.help');
+        // Route::get('/search', [DashboardController::class, 'profile'])->name('user.search');
+        // Route::group(['prefix' => '/settings'], function () {
+        //     Route::get('/', [DashboardController::class, 'profile'])->name('user.settings');
+        //     Route::get('/password', [DashboardController::class, 'profile'])->name('user.password');
+        // });
+    });
 });
